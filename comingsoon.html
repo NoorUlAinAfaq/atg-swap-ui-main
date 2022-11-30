@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+   <head>
+      <!-- Required meta tags -->
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+      <!-- Bootstrap CSS -->
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+      <!-- Font Awesome CDN -->
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha512-xh6O/CkQoPOWDdYTDqeRdPCVd1SpvCA9XXcUnZS2FmJNp1coAFzvtCN9BmamE+4aHK8yyUHUSCcJHgXloTyT2A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+      <!-- Styles CSS -->
+      <link rel="stylesheet" href="styles.css">
+      <title>Astrogrow Swap</title>
+   </head>
+   <body>
+      <!-- header -->
+      <header>
+         <div class="d-flex justify-content-between custom-header">
+            <div class="d-flex ml-2">
+               <div class="logo">
+                  <img src="img/logo.png" alt="logo">
+               </div>
+            </div>
+            <div class="d-flex mr-2">
+               <button class="wallet-balance">
+               <img class="custom-icon" src="img/ticker.png" alt="astrogrow price ticker">
+               $<span id="live-price">0.00</span>
+               </button>
+               <button class="wallet-button" onclick="connectWallet()">Connect Wallet</button>
+            </div>
+            <div class="d-flex mr-2 dc-none">
+               <div id="nav-toggle" onclick="toggleNav()">
+                  <i class="fa-solid fa-bars"></i>
+               </div>
+            </div>
+         </div>
+      </header>
+      <!-- sidebar -->
+      <nav class="side-nav" id="to-toggle">
+         <ul>
+            <li>
+               <a href="comingsoon.html">
+               <i class="fa-solid fa-house"></i>
+               <span>Home</span>
+               </a>
+            </li>
+            <li>
+               <a href="staking.html">
+               <i class="fa-solid fa-coins"></i>
+               <span>Staking Pools</span>
+               </a>
+            </li>
+            <li>
+               <a href="swap.html">
+               <i class="fa-solid fa-arrow-right-arrow-left"></i>
+               <span>Swap</span>
+               </a>
+            </li>
+            <li>
+               <a href="comingsoon.html">
+               <i class="fa-solid fa-rocket"></i>
+               <span>Launchpad</span>
+               </a>
+            </li>
+            <li>
+               <a href="comingsoon.html">
+               <i class="fa-solid fa-gamepad"></i>
+               <span>Raffle/Games</span>
+               </a>
+            </li>
+            <li>
+               <a href="comingsoon.html">
+               <i class="fa-solid fa-chart-pie"></i>
+               <span>Governance</span>
+               </a>
+            </li>
+         </ul>
+      </nav>
+      <!-- body -->
+      <section class="swap-section">
+         <div class="container">
+            <div class="row">
+               <div class="col-sm-4"></div>
+               <div class="col-sm-4">
+                  <video poster="" playsinline="" autoplay="" disablepictureinpicture="" muted="" loop="" id="coming-soon" controllist="nodownload">
+                     <source src="img/coming-soon.mp4" type="video/mp4">
+                     Your browser does not support HTML5 video.
+                  </video>
+               </div>
+               <div class="col-sm-4"></div>
+            </div>
+         </div>
+      </section>
+      <!-- Optional JavaScript -->
+      <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+      <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+      <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+      <script>
+      var connectWallet = function(){
+          ethereum.enable()
+      }
+         // document.getElementById('nav-toggle').onclick = test();
+         function toggleNav(){
+             document.getElementById('to-toggle').classList.toggle('sidenav-hide');
+             document.querySelector('.swap-section').classList.toggle('full-width-section');
+         }
+         
+         var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+if (!isMobile) {
+  document.getElementById('to-toggle').classList.add("sidenav-hide");
+}
+////////////////LIVE PRICE//////////////////
+      fetch('https://api.pancakeswap.info/api/v2/tokens/0x9d5758d86998d74f002c218c9967980a238beb55')
+  .then(response => response.json())
+  .then(data => document.getElementById("live-price").innerHTML = parseFloat(data.data.price).toFixed(7));
+   fetch('https://api.pancakeswap.info/api/v2/tokens/0x9d5758d86998d74f002c218c9967980a238beb55')
+  .then(response => response.json())
+  .then(data => document.getElementById("live-price2").innerHTML = parseFloat(data.data.price).toFixed(7));
+         
+      </script>
+   </body>
+</html>
