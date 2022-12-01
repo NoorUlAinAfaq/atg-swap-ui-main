@@ -130,7 +130,7 @@
                      </div>
                      <div class="d-flex justify-content-between balance">
                         <div>Current Stake:</div>
-                        <div class="bold" id="currentStaked"><span id="currentStaked0">0</span></div>
+                        <div class="bold"><span id="currentStaked0">0</span></div>
                      </div>
                      <button class="btn-custom-4 mb-2" type="button" onclick="approve()">Approve</button>
                      <div class="d-flex mb-2 justify-content-between">
@@ -142,8 +142,6 @@
                         <input class="value-field-2" type="number" id="earnedAtg" disabled>
                         <button class="btn btn-primary" type="button" onclick="claimReward()">Harvest</button>
                      </div>
-
-                     <button class="btn-custom" onclick="connectWallet()">Unlock Wallet</button>
                   </form>
                </div>
             </div>
@@ -197,8 +195,6 @@
                         <input class="value-field-2" type="text" value="0" name="" id="">
                         <button class="bc-disabled">Harvest</button>
                      </div>
-
-                     <button class="btn-custom" onclick="connectWallet()">Unlock Wallet</button>
                   </form>
                </div>
             </div>
@@ -252,8 +248,6 @@
                         <input class="value-field-2" type="text" value="0" name="" id="">
                         <button class="bc3-disabled">Harvest</button>
                      </div>
-
-                     <button class="btn-custom-3" onclick="connectWallet()">Unlock Wallet</button>
                   </form>
                </div>
             </div>
@@ -307,8 +301,6 @@
                         <input class="value-field-2" type="text" value="0" name="" id="">
                         <button class="bc3-disabled">Harvest</button>
                      </div>
-
-                     <button class="btn-custom-3" onclick="connectWallet()">Unlock Wallet</button>
                   </form>
                </div>
             </div>
@@ -369,7 +361,27 @@
    <script src="https://cdn.jsdelivr.net/npm/@walletconnect/web3-provider@1.7.1/dist/umd/index.min.js"></script>
 
    <script>
+window.onload = (event) => {
+        isConnected();
+        load()
+     };
+     
+      const walletButton = document.querySelectorAll('.wallet-button');
+            
+      async function isConnected() {
+         const accounts = await ethereum.request({method: 'eth_accounts'});       
+         if (accounts.length) {
 
+            walletButton.forEach(walletButton => {
+            walletButton.innerHTML = 'Wallet Connected';
+            walletButton.style.backgroundColor = '#1e0835';
+            walletButton.style.color = '#f4f4f4';
+            });
+         } else {
+            walletButton.innerHTML = "Unlock Wallet";
+         }
+      }
+      
       let account;
       var provider = new WalletConnectProvider.default({
          rpc: {
@@ -400,8 +412,8 @@
          console.log(currentStake)
          let totalStakeElement = document.getElementById('totalStaked0').value;
          let currentStakeElement = document.getElementById('currentStaked0').value
-         currentStakeElement = currentStake
-         totalStakeElement = totalStake
+         currentStakeElement = currentStake/1000000000
+         totalStakeElement = totalStake/1000000000
       }
       var connectWallet = function () {
          // ethereum.enable();
@@ -496,8 +508,8 @@
          console.log(currentStake)
          let totalStakeElement = document.getElementById('totalStaked0')
          let currentStakeElement = document.getElementById('currentStaked0');
-         currentStakeElement.innerHTML = currentStake
-         totalStakeElement.innerHTML = totalStake
+         currentStakeElement.innerHTML = currentStake/1000000000
+         totalStakeElement.innerHTML = totalStake/1000000000
 
       }
       async function stake() {
@@ -518,7 +530,7 @@
          console.log('hello form 1')
          console.log('hello ==>', PendingRewards)
          if (PendingRewards) {
-            document.getElementById('earnedAtg').value = PendingRewards;
+            document.getElementById('earnedAtg').value = PendingRewards/1000000000;
          }
       }
       async function claimReward() {
