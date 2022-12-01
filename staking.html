@@ -33,7 +33,7 @@
                <img class="custom-icon" src="img/ticker.png" alt="astrogrow price ticker">
                $<span id="live-price">0.00</span>
             </button>
-            <button class="wallet-button" onclick="connectWallet()">Connect Wallet</button>
+            <button class="wallet-button" id="connect-wallet" onclick="connectWallet()">Connect Wallet</button>
          </div>
          <div class="d-flex mr-2 dc-none">
             <div id="nav-toggle" onclick="toggleNav()">
@@ -132,10 +132,14 @@
                         <div>Current Stake:</div>
                         <div class="bold"><span id="currentStaked0">0</span></div>
                      </div>
-                     <button class="btn-custom-4 mb-2" type="button" onclick="approve()">Approve</button>
+                     <div class="d-flex mb-2 justify-content-between">
+                        <button class="btn-custom-4-l mb-2" type="button" id="approve-btn"
+                           onclick="approve()">Approve</button>
+                        <button class="btn-custom-4-r mb-2" type="button" onclick="unStake()">Unstake</button>
+                     </div>
                      <div class="d-flex mb-2 justify-content-between">
                         <input class="value-field-2" type="number" value="0" name="" id="stakeInput">
-                        <button class="btn-custom-4-r" type="button" onclick="stake()">Stake</button>
+                        <button class="btn-custom-4-r" type="button" id="stake-btn" onclick="stake()">Stake</button>
                      </div>
                      <h5 class="d-flex align-items-center">ATG Earned:</h5>
                      <div class="d-flex mb-2 justify-content-between">
@@ -361,27 +365,29 @@
    <script src="https://cdn.jsdelivr.net/npm/@walletconnect/web3-provider@1.7.1/dist/umd/index.min.js"></script>
 
    <script>
-window.onload = (event) => {
-        isConnected();
-        load()
-     };
-     
+
+      let tokenABI = [{ "inputs": [{ "internalType": "address", "name": "_dexRouter", "type": "address" }], "stateMutability": "nonpayable", "type": "constructor" }, { "anonymous": false, "inputs": [{ "indexed": true, "internalType": "address", "name": "owner", "type": "address" }, { "indexed": true, "internalType": "address", "name": "spender", "type": "address" }, { "indexed": false, "internalType": "uint256", "name": "value", "type": "uint256" }], "name": "Approval", "type": "event" }, { "anonymous": false, "inputs": [{ "indexed": false, "internalType": "uint256", "name": "amountBNB", "type": "uint256" }, { "indexed": false, "internalType": "uint256", "name": "amountBOG", "type": "uint256" }], "name": "AutoLiquify", "type": "event" }, { "anonymous": false, "inputs": [{ "indexed": false, "internalType": "uint256", "name": "duration", "type": "uint256" }], "name": "BuybackMultiplierActive", "type": "event" }, { "anonymous": false, "inputs": [{ "indexed": false, "internalType": "address", "name": "owner", "type": "address" }], "name": "OwnershipTransferred", "type": "event" }, { "anonymous": false, "inputs": [{ "indexed": true, "internalType": "address", "name": "from", "type": "address" }, { "indexed": true, "internalType": "address", "name": "to", "type": "address" }, { "indexed": false, "internalType": "uint256", "name": "value", "type": "uint256" }], "name": "Transfer", "type": "event" }, { "inputs": [], "name": "MASK", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "WBNB", "outputs": [{ "internalType": "address", "name": "", "type": "address" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "_maxTxAmount", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "holder", "type": "address" }, { "internalType": "address", "name": "spender", "type": "address" }], "name": "allowance", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "spender", "type": "address" }, { "internalType": "uint256", "name": "amount", "type": "uint256" }], "name": "approve", "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "spender", "type": "address" }], "name": "approveMax", "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "adr", "type": "address" }], "name": "authorize", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [], "name": "autoBuybackEnabled", "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "autoLiquidityReceiver", "outputs": [{ "internalType": "address", "name": "", "type": "address" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "account", "type": "address" }], "name": "balanceOf", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "clearBuybackMultiplier", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [], "name": "decimals", "outputs": [{ "internalType": "uint8", "name": "", "type": "uint8" }], "stateMutability": "pure", "type": "function" }, { "inputs": [], "name": "distributorAddress", "outputs": [{ "internalType": "address", "name": "", "type": "address" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "getCirculatingSupply", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "uint256", "name": "accuracy", "type": "uint256" }], "name": "getLiquidityBacking", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "getMultipliedFee", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "getOwner", "outputs": [{ "internalType": "address", "name": "", "type": "address" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "bool", "name": "selling", "type": "bool" }], "name": "getTotalFee", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "adr", "type": "address" }], "name": "isAuthorized", "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "uint256", "name": "target", "type": "uint256" }, { "internalType": "uint256", "name": "accuracy", "type": "uint256" }], "name": "isOverLiquified", "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "account", "type": "address" }], "name": "isOwner", "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "launch", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [], "name": "launchedAt", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "launchedAtTimestamp", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "marketingFeeReceiver", "outputs": [{ "internalType": "address", "name": "", "type": "address" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "name", "outputs": [{ "internalType": "string", "name": "", "type": "string" }], "stateMutability": "pure", "type": "function" }, { "inputs": [], "name": "pair", "outputs": [{ "internalType": "address", "name": "", "type": "address" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "router", "outputs": [{ "internalType": "contract IDEXRouter", "name": "", "type": "address" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "bool", "name": "_enabled", "type": "bool" }, { "internalType": "uint256", "name": "_cap", "type": "uint256" }, { "internalType": "uint256", "name": "_amount", "type": "uint256" }, { "internalType": "uint256", "name": "_period", "type": "uint256" }], "name": "setAutoBuybackSettings", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "uint256", "name": "numerator", "type": "uint256" }, { "internalType": "uint256", "name": "denominator", "type": "uint256" }, { "internalType": "uint256", "name": "length", "type": "uint256" }], "name": "setBuybackMultiplierSettings", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "uint256", "name": "_minPeriod", "type": "uint256" }, { "internalType": "uint256", "name": "_minDistribution", "type": "uint256" }], "name": "setDistributionCriteria", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "uint256", "name": "gas", "type": "uint256" }], "name": "setDistributorSettings", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "_autoLiquidityReceiver", "type": "address" }, { "internalType": "address", "name": "_marketingFeeReceiver", "type": "address" }], "name": "setFeeReceivers", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "uint256", "name": "_liquidityFee", "type": "uint256" }, { "internalType": "uint256", "name": "_buybackFee", "type": "uint256" }, { "internalType": "uint256", "name": "_reflectionFee", "type": "uint256" }, { "internalType": "uint256", "name": "_marketingFee", "type": "uint256" }, { "internalType": "uint256", "name": "_feeDenominator", "type": "uint256" }], "name": "setFees", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "holder", "type": "address" }, { "internalType": "bool", "name": "exempt", "type": "bool" }], "name": "setIsDividendExempt", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "holder", "type": "address" }, { "internalType": "bool", "name": "exempt", "type": "bool" }], "name": "setIsFeeExempt", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "holder", "type": "address" }, { "internalType": "bool", "name": "exempt", "type": "bool" }], "name": "setIsTxLimitExempt", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "bool", "name": "_enabled", "type": "bool" }, { "internalType": "uint256", "name": "_amount", "type": "uint256" }], "name": "setSwapBackSettings", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "uint256", "name": "_target", "type": "uint256" }, { "internalType": "uint256", "name": "_denominator", "type": "uint256" }], "name": "setTargetLiquidity", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "uint256", "name": "amount", "type": "uint256" }], "name": "setTxLimit", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [], "name": "swapEnabled", "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "swapThreshold", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "symbol", "outputs": [{ "internalType": "string", "name": "", "type": "string" }], "stateMutability": "pure", "type": "function" }, { "inputs": [], "name": "totalSupply", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "recipient", "type": "address" }, { "internalType": "uint256", "name": "amount", "type": "uint256" }], "name": "transfer", "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "sender", "type": "address" }, { "internalType": "address", "name": "recipient", "type": "address" }, { "internalType": "uint256", "name": "amount", "type": "uint256" }], "name": "transferFrom", "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "address payable", "name": "adr", "type": "address" }], "name": "transferOwnership", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "uint256", "name": "amount", "type": "uint256" }, { "internalType": "bool", "name": "triggerBuybackMultiplier", "type": "bool" }], "name": "triggerZeusBuyback", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "adr", "type": "address" }], "name": "unauthorize", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "stateMutability": "payable", "type": "receive" }]
+      let stakingABI = [{ "anonymous": false, "inputs": [{ "indexed": true, "internalType": "uint256", "name": "tokens", "type": "uint256" }], "name": "AddedToExistingStake", "type": "event" }, { "anonymous": false, "inputs": [{ "indexed": true, "internalType": "address", "name": "_from", "type": "address" }, { "indexed": true, "internalType": "address", "name": "_to", "type": "address" }], "name": "OwnershipTransferred", "type": "event" }, { "anonymous": false, "inputs": [{ "indexed": true, "internalType": "uint256", "name": "_rewards", "type": "uint256" }], "name": "RewardsCollected", "type": "event" }, { "anonymous": false, "inputs": [{ "indexed": true, "internalType": "uint256", "name": "_amount", "type": "uint256" }], "name": "StakeStarted", "type": "event" }, { "anonymous": false, "inputs": [{ "indexed": true, "internalType": "uint256", "name": "_refunded", "type": "uint256" }], "name": "StakingStopped", "type": "event" }, { "inputs": [], "name": "AGTNative", "outputs": [{ "internalType": "address", "name": "", "type": "address" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "_user", "type": "address" }], "name": "ActiveStakeDeposit", "outputs": [{ "internalType": "uint256", "name": "_activeDeposit", "type": "uint256" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "ClaimReward", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "_user", "type": "address" }], "name": "LastStakedOn", "outputs": [{ "internalType": "uint256", "name": "_unixLastStakedTime", "type": "uint256" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "_caller", "type": "address" }], "name": "PendingReward", "outputs": [{ "internalType": "uint256", "name": "_pendingRewardWeis", "type": "uint256" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "uint256", "name": "_amount", "type": "uint256" }], "name": "Stake", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [], "name": "StopStaking", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "_user", "type": "address" }], "name": "TotalStakingRewards", "outputs": [{ "internalType": "uint256", "name": "_totalEarned", "type": "uint256" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "_user", "type": "address" }], "name": "YourTotalStakingTillToday", "outputs": [{ "internalType": "uint256", "name": "_totalStaking", "type": "uint256" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "owner", "outputs": [{ "internalType": "address payable", "name": "", "type": "address" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "stakingRate", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "totalRewards", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "totalStakes", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "address payable", "name": "_newOwner", "type": "address" }], "name": "transferOwnership", "outputs": [], "stateMutability": "nonpayable", "type": "function" }]
+      let tokenAddress = "0x4128C8Da229599C6d2d7E23bd449f047a5eB7f73";
+      let stakingAddress = "0x346bfD04c49118Ee71Fd23b3e1813a34cc595f9f";
       const walletButton = document.querySelectorAll('.wallet-button');
-            
+
       async function isConnected() {
-         const accounts = await ethereum.request({method: 'eth_accounts'});       
+         const accounts = await web3.eth.getAccounts();
          if (accounts.length) {
 
             walletButton.forEach(walletButton => {
-            walletButton.innerHTML = 'Wallet Connected';
-            walletButton.style.backgroundColor = '#1e0835';
-            walletButton.style.color = '#f4f4f4';
+               walletButton.innerHTML = 'Wallet Connected';
+               walletButton.style.backgroundColor = '#1e0835';
+               walletButton.style.color = '#f4f4f4';
             });
+            walletButton.disabled = true
          } else {
             walletButton.innerHTML = "Unlock Wallet";
          }
+
       }
-      
+
       let account;
       var provider = new WalletConnectProvider.default({
          rpc: {
@@ -394,39 +400,79 @@ window.onload = (event) => {
       });
       let currentAcc;
       var connectWc = async () => {
+
          await provider.enable()
-         window.web3 = new Web3(provider)
-         let accounts = await web3.eth.getAccounts()
-         account = accounts[0];
-         currentAcc = account
-         console.log('hello1');
-         window.stakingContract = await loadStakingContract();
-         window.tokenContract = await loadTokenontract();
-         console.log('staking==>', window.stakingContract)
-         console.log('token==>', window.tokenContract)
-         await calculatePendingRewards();
-         console.log('hellooooo')
-         let totalStake = await window.stakingContract.methods.YourTotalStakingTillToday(currentAcc).call();
-         let currentStake = await window.stakingContract.methods.ActiveStakeDeposit(currentAcc).call();
-         console.log(totalStake);
-         console.log(currentStake)
-         let totalStakeElement = document.getElementById('totalStaked0').value;
-         let currentStakeElement = document.getElementById('currentStaked0').value
-         currentStakeElement = currentStake/1000000000
-         totalStakeElement = totalStake/1000000000
+         window.web3 = new Web3(provider);
+         isConnected();
+         let chain_id = await checkChainId();
+
+         if (chain_id !== 97) {
+            alert('you are on the wrong chain, kindly switch to binance smart chain(test net for now for development & testing)')
+         }
+         else {
+            let accounts = await web3.eth.getAccounts();
+
+            account = accounts[0];
+            currentAcc = account
+            console.log('hello1');
+            window.stakingContract = await loadStakingContract();
+            window.tokenContract = await loadTokenontract();
+            console.log('staking==>', window.stakingContract)
+            console.log('token==>', window.tokenContract)
+            await calculatePendingRewards();
+            console.log('hellooooo')
+            let totalStake = await window.stakingContract.methods.YourTotalStakingTillToday(currentAcc).call();
+            let currentStake = await window.stakingContract.methods.ActiveStakeDeposit(currentAcc).call();
+            console.log(totalStake);
+            console.log(currentStake)
+            let totalStakeElement = document.getElementById('totalStaked0').value;
+            let currentStakeElement = document.getElementById('currentStaked0').value
+            currentStakeElement = currentStake / 1000000000
+            totalStakeElement = totalStake / 1000000000
+            let chain_id = await checkChainId()
+            console.log(chain_id);
+            let btnElement = document.getElementById('connect-wallet');
+            if (web3.eth.getAccounts()) {
+               btnElement.value = "Wallet Connected";
+               btnElement.disabled = true;
+               await checkAllowence();
+            }
+
+
+            else {
+               alert('wallet not connected')
+            }
+         }
+      }
+      async function checkAllowence() {
+         let btn = document.getElementById('approve-btn');
+         let btn2 = document.getElementById('stake-btn');
+         await loadTokenontract();
+         let currentAllowence = await window.tokenContract.methods.allowance(currentAcc, stakingAddress).call();
+         if (currentAllowence > 0) {
+            btn.disabled = true;
+            console.log('have allowence')
+         }
+         else {
+            btn2.disabled = true;
+            console.log("currentAllowence", currentAllowence)
+         }
       }
       var connectWallet = function () {
          // ethereum.enable();
          event.preventDefault();
          $('#WalletModal').modal('show')
       }
+      async function returnEarned() {
+         return await calculatePendingRewards();
+      }
       // document.getElementById('nav-toggle').onclick = test();
       function toggleNav() {
          document.getElementById('to-toggle').classList.toggle('sidenav-hide');
          document.querySelector('.swap-section').classList.toggle('full-width-section');
-      }
 
-      var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+         var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+      }
       if (!isMobile) {
          document.getElementById('to-toggle').classList.add("sidenav-hide");
       }
@@ -446,18 +492,42 @@ window.onload = (event) => {
 
 
       async function approve() {
+         let accounts = await web3.eth.getAccounts();
+         let account = accounts[0];
+         let tokenValueToStake = document.getElementById('stakeInput').value;
+         let updatedVale = tokenValueToStake * (10 ** 9);
+         if (updatedVale === 0) {
+            alert('please enter your tokens in the input field')
+         }
+         else {
 
-         await window.tokenContract.methods.approveMax(stakingAddress).send({
-            from: currentAcc,
-            gas: 2100000
-         }).then((res) => {
-            console.log('done == >', res)
-         })
+
+            await window.tokenContract.methods.approve(currentAcc, updatedVale).send({
+               from: currentAcc
+            }).then((res) => {
+               console.log('done ==>', res)
+            })
+         }
+      }
+
+      async function checkChainId() {
+         let web3 = new Web3(window.ethereum)
+         return await web3.eth.getChainId()
       }
       async function loadWeb3() {
          if (window.ethereum) {
-            window.web3 = new Web3(window.ethereum);
-            window.ethereum.enable();
+            await window.ethereum.enable();
+            let chain_id = await checkChainId();
+            if (chain_id === 56 || chain_id === 97) {
+               window.web3 = new Web3(window.ethereum);
+               await window.ethereum.enable();
+            }
+            else {
+               alert('you are on the wrong chain, kindly switch to binance smart chain')
+
+            }
+
+
             console.log('hello from if')
          } else {
             alert("please install metamask");
@@ -465,10 +535,6 @@ window.onload = (event) => {
          console.log('hello')
       }
 
-      let tokenABI = [{ "inputs": [{ "internalType": "address", "name": "_dexRouter", "type": "address" }], "stateMutability": "nonpayable", "type": "constructor" }, { "anonymous": false, "inputs": [{ "indexed": true, "internalType": "address", "name": "owner", "type": "address" }, { "indexed": true, "internalType": "address", "name": "spender", "type": "address" }, { "indexed": false, "internalType": "uint256", "name": "value", "type": "uint256" }], "name": "Approval", "type": "event" }, { "anonymous": false, "inputs": [{ "indexed": false, "internalType": "uint256", "name": "amountBNB", "type": "uint256" }, { "indexed": false, "internalType": "uint256", "name": "amountBOG", "type": "uint256" }], "name": "AutoLiquify", "type": "event" }, { "anonymous": false, "inputs": [{ "indexed": false, "internalType": "uint256", "name": "duration", "type": "uint256" }], "name": "BuybackMultiplierActive", "type": "event" }, { "anonymous": false, "inputs": [{ "indexed": false, "internalType": "address", "name": "owner", "type": "address" }], "name": "OwnershipTransferred", "type": "event" }, { "anonymous": false, "inputs": [{ "indexed": true, "internalType": "address", "name": "from", "type": "address" }, { "indexed": true, "internalType": "address", "name": "to", "type": "address" }, { "indexed": false, "internalType": "uint256", "name": "value", "type": "uint256" }], "name": "Transfer", "type": "event" }, { "inputs": [], "name": "MASK", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "WBNB", "outputs": [{ "internalType": "address", "name": "", "type": "address" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "_maxTxAmount", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "holder", "type": "address" }, { "internalType": "address", "name": "spender", "type": "address" }], "name": "allowance", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "spender", "type": "address" }, { "internalType": "uint256", "name": "amount", "type": "uint256" }], "name": "approve", "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "spender", "type": "address" }], "name": "approveMax", "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "adr", "type": "address" }], "name": "authorize", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [], "name": "autoBuybackEnabled", "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "autoLiquidityReceiver", "outputs": [{ "internalType": "address", "name": "", "type": "address" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "account", "type": "address" }], "name": "balanceOf", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "clearBuybackMultiplier", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [], "name": "decimals", "outputs": [{ "internalType": "uint8", "name": "", "type": "uint8" }], "stateMutability": "pure", "type": "function" }, { "inputs": [], "name": "distributorAddress", "outputs": [{ "internalType": "address", "name": "", "type": "address" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "getCirculatingSupply", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "uint256", "name": "accuracy", "type": "uint256" }], "name": "getLiquidityBacking", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "getMultipliedFee", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "getOwner", "outputs": [{ "internalType": "address", "name": "", "type": "address" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "bool", "name": "selling", "type": "bool" }], "name": "getTotalFee", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "adr", "type": "address" }], "name": "isAuthorized", "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "uint256", "name": "target", "type": "uint256" }, { "internalType": "uint256", "name": "accuracy", "type": "uint256" }], "name": "isOverLiquified", "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "account", "type": "address" }], "name": "isOwner", "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "launch", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [], "name": "launchedAt", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "launchedAtTimestamp", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "marketingFeeReceiver", "outputs": [{ "internalType": "address", "name": "", "type": "address" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "name", "outputs": [{ "internalType": "string", "name": "", "type": "string" }], "stateMutability": "pure", "type": "function" }, { "inputs": [], "name": "pair", "outputs": [{ "internalType": "address", "name": "", "type": "address" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "router", "outputs": [{ "internalType": "contract IDEXRouter", "name": "", "type": "address" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "bool", "name": "_enabled", "type": "bool" }, { "internalType": "uint256", "name": "_cap", "type": "uint256" }, { "internalType": "uint256", "name": "_amount", "type": "uint256" }, { "internalType": "uint256", "name": "_period", "type": "uint256" }], "name": "setAutoBuybackSettings", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "uint256", "name": "numerator", "type": "uint256" }, { "internalType": "uint256", "name": "denominator", "type": "uint256" }, { "internalType": "uint256", "name": "length", "type": "uint256" }], "name": "setBuybackMultiplierSettings", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "uint256", "name": "_minPeriod", "type": "uint256" }, { "internalType": "uint256", "name": "_minDistribution", "type": "uint256" }], "name": "setDistributionCriteria", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "uint256", "name": "gas", "type": "uint256" }], "name": "setDistributorSettings", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "_autoLiquidityReceiver", "type": "address" }, { "internalType": "address", "name": "_marketingFeeReceiver", "type": "address" }], "name": "setFeeReceivers", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "uint256", "name": "_liquidityFee", "type": "uint256" }, { "internalType": "uint256", "name": "_buybackFee", "type": "uint256" }, { "internalType": "uint256", "name": "_reflectionFee", "type": "uint256" }, { "internalType": "uint256", "name": "_marketingFee", "type": "uint256" }, { "internalType": "uint256", "name": "_feeDenominator", "type": "uint256" }], "name": "setFees", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "holder", "type": "address" }, { "internalType": "bool", "name": "exempt", "type": "bool" }], "name": "setIsDividendExempt", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "holder", "type": "address" }, { "internalType": "bool", "name": "exempt", "type": "bool" }], "name": "setIsFeeExempt", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "holder", "type": "address" }, { "internalType": "bool", "name": "exempt", "type": "bool" }], "name": "setIsTxLimitExempt", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "bool", "name": "_enabled", "type": "bool" }, { "internalType": "uint256", "name": "_amount", "type": "uint256" }], "name": "setSwapBackSettings", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "uint256", "name": "_target", "type": "uint256" }, { "internalType": "uint256", "name": "_denominator", "type": "uint256" }], "name": "setTargetLiquidity", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "uint256", "name": "amount", "type": "uint256" }], "name": "setTxLimit", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [], "name": "swapEnabled", "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "swapThreshold", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "symbol", "outputs": [{ "internalType": "string", "name": "", "type": "string" }], "stateMutability": "pure", "type": "function" }, { "inputs": [], "name": "totalSupply", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "recipient", "type": "address" }, { "internalType": "uint256", "name": "amount", "type": "uint256" }], "name": "transfer", "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "sender", "type": "address" }, { "internalType": "address", "name": "recipient", "type": "address" }, { "internalType": "uint256", "name": "amount", "type": "uint256" }], "name": "transferFrom", "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "address payable", "name": "adr", "type": "address" }], "name": "transferOwnership", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "uint256", "name": "amount", "type": "uint256" }, { "internalType": "bool", "name": "triggerBuybackMultiplier", "type": "bool" }], "name": "triggerZeusBuyback", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "adr", "type": "address" }], "name": "unauthorize", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "stateMutability": "payable", "type": "receive" }]
-      let stakingABI = [{ "anonymous": false, "inputs": [{ "indexed": true, "internalType": "uint256", "name": "tokens", "type": "uint256" }], "name": "AddedToExistingStake", "type": "event" }, { "anonymous": false, "inputs": [{ "indexed": true, "internalType": "address", "name": "_from", "type": "address" }, { "indexed": true, "internalType": "address", "name": "_to", "type": "address" }], "name": "OwnershipTransferred", "type": "event" }, { "anonymous": false, "inputs": [{ "indexed": true, "internalType": "uint256", "name": "_rewards", "type": "uint256" }], "name": "RewardsCollected", "type": "event" }, { "anonymous": false, "inputs": [{ "indexed": true, "internalType": "uint256", "name": "_amount", "type": "uint256" }], "name": "StakeStarted", "type": "event" }, { "anonymous": false, "inputs": [{ "indexed": true, "internalType": "uint256", "name": "_refunded", "type": "uint256" }], "name": "StakingStopped", "type": "event" }, { "inputs": [], "name": "AGTNative", "outputs": [{ "internalType": "address", "name": "", "type": "address" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "_user", "type": "address" }], "name": "ActiveStakeDeposit", "outputs": [{ "internalType": "uint256", "name": "_activeDeposit", "type": "uint256" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "ClaimReward", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "_user", "type": "address" }], "name": "LastStakedOn", "outputs": [{ "internalType": "uint256", "name": "_unixLastStakedTime", "type": "uint256" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "_caller", "type": "address" }], "name": "PendingReward", "outputs": [{ "internalType": "uint256", "name": "_pendingRewardWeis", "type": "uint256" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "uint256", "name": "_amount", "type": "uint256" }], "name": "Stake", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [], "name": "StopStaking", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "_user", "type": "address" }], "name": "TotalStakingRewards", "outputs": [{ "internalType": "uint256", "name": "_totalEarned", "type": "uint256" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "_user", "type": "address" }], "name": "YourTotalStakingTillToday", "outputs": [{ "internalType": "uint256", "name": "_totalStaking", "type": "uint256" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "owner", "outputs": [{ "internalType": "address payable", "name": "", "type": "address" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "stakingRate", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "totalRewards", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "totalStakes", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "address payable", "name": "_newOwner", "type": "address" }], "name": "transferOwnership", "outputs": [], "stateMutability": "nonpayable", "type": "function" }]
-      let tokenAddress = "0x4128C8Da229599C6d2d7E23bd449f047a5eB7f73";
-      let stakingAddress = "0x346bfD04c49118Ee71Fd23b3e1813a34cc595f9f";
 
       async function loadStakingContract() {
          return await new window.web3.eth.Contract(
@@ -488,29 +554,55 @@ window.onload = (event) => {
       }
       async function load() {
          await loadWeb3();
-         let accounts = await window.ethereum.request({ method: "eth_requestAccounts" })
-         console.log(accounts)
-         currentAcc = accounts[0]
+         isConnected();
+         // console.log(chain_id)
+         let chain_id = await checkChainId()
+         if (chain_id === 97 || chain_id === 56) {
+            let accounts = await web3.eth.getAccounts()
+            console.log(accounts)
+            currentAcc = accounts[0];
+            window.stakingContract = await loadStakingContract();
+            window.tokenContract = await loadTokenontract();
 
-         window.stakingContract = await loadStakingContract();
-         window.tokenContract = await loadTokenontract();
+            console.log('hello from load()')
 
-         console.log('hello from load()')
-
-         console.log(currentAcc)
-         if (window.stakingContract) {
-            await calculatePendingRewards();
-            console.log('calculated')
+            console.log(currentAcc)
+            if (window.stakingContract) {
+               await calculatePendingRewards();
+               console.log('calculated')
+            }
+            let totalStake = await window.stakingContract.methods.YourTotalStakingTillToday(currentAcc).call();
+            let currentStake = await window.stakingContract.methods.ActiveStakeDeposit(currentAcc).call();
+            console.log(totalStake);
+            console.log(currentStake)
+            let totalStakeElement = document.getElementById('totalStaked0')
+            let currentStakeElement = document.getElementById('currentStaked0');
+            currentStakeElement.innerHTML = currentStake / 1000000000
+            totalStakeElement.innerHTML = totalStake / 1000000000;
+            await checkAllowence();
          }
-         let totalStake = await window.stakingContract.methods.YourTotalStakingTillToday(currentAcc).call();
-         let currentStake = await window.stakingContract.methods.ActiveStakeDeposit(currentAcc).call();
-         console.log(totalStake);
-         console.log(currentStake)
-         let totalStakeElement = document.getElementById('totalStaked0')
-         let currentStakeElement = document.getElementById('currentStaked0');
-         currentStakeElement.innerHTML = currentStake/1000000000
-         totalStakeElement.innerHTML = totalStake/1000000000
+         else {
+            alert('wrong network, select binance smart chain')
+         }
 
+
+
+      }
+      async function unStake() {
+         await window.stakingContract.methods.StopStaking().send({
+            from: currentAcc
+         }).then(async (res) => {
+            let totalStake = await window.stakingContract.methods.YourTotalStakingTillToday(currentAcc).call();
+            let currentStake = await window.stakingContract.methods.ActiveStakeDeposit(currentAcc).call();
+            console.log(totalStake);
+            console.log(currentStake)
+            let totalStakeElement = document.getElementById('totalStaked0')
+            let currentStakeElement = document.getElementById('currentStaked0');
+            currentStakeElement.innerHTML = currentStake / 1000000000
+            totalStakeElement.innerHTML = totalStake / 1000000000
+         }).catch((res) => {
+            console.log(res)
+         })
       }
       async function stake() {
          let accounts = await web3.eth.getAccounts();
@@ -519,26 +611,48 @@ window.onload = (event) => {
          let updatedVale = tokenValueToStake * (10 ** 9);
          console.log(updatedVale);
          await window.stakingContract.methods.Stake(updatedVale).send({
-            from: account,
-            gas: 2100000
-         }).then((res) => {
-            console.log('hello ==>', res)
+            from: account
+         }).then(async (res) => {
+            console.log('hello ==>', res);
+            let totalStake = await window.stakingContract.methods.YourTotalStakingTillToday(currentAcc).call();
+            let currentStake = await window.stakingContract.methods.ActiveStakeDeposit(currentAcc).call();
+            console.log(totalStake);
+            console.log(currentStake)
+            let totalStakeElement = document.getElementById('totalStaked0')
+            let currentStakeElement = document.getElementById('currentStaked0');
+            currentStakeElement.innerHTML = currentStake / 1000000000
+            totalStakeElement.innerHTML = totalStake / 1000000000;
+            await calculatePendingRewards();
+            document.getElementById('stakeInput').value = 0
          })
       }
       async function calculatePendingRewards() {
-         let PendingRewards = await window.stakingContract.methods.PendingReward(currentAcc).call();
+         // window.web3 = winow.web3
+         await loadSmartContract();
+         let PendingRewards = await window.stakingContract.methods.PendingReward(currentAcc).call() / 1000000000;
          console.log('hello form 1')
          console.log('hello ==>', PendingRewards)
          if (PendingRewards) {
-            document.getElementById('earnedAtg').value = PendingRewards/1000000000;
+            document.getElementById('earnedAtg').value = PendingRewards;
          }
       }
       async function claimReward() {
          await window.stakingContract.methods.ClaimReward().send({
-            from: currentAcc,
-            gas: 2100000
-         }).then((res) => {
-            console.log('tx ==> ', res)
+            from: currentAcc
+         }).then(async (res) => {
+            console.log('tx ==> ', res);
+
+            await loadSmartContract();
+            let PendingRewards = await window.stakingContract.methods.PendingReward(currentAcc).call() / 1000000000;
+            console.log('hello form 1')
+            console.log('hello ==>', PendingRewards)
+            if (PendingRewards) {
+               console.log("response ==>", res)
+               document.getElementById('earnedAtg').value = PendingRewards;
+               if (PendingRewards === 0) {
+                  document.getElementById('earnedAtg').value = 0
+               }
+            }
          })
 
       }
